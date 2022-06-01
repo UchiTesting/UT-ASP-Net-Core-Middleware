@@ -19,7 +19,7 @@ app.Use((Func<HttpContext, Func<Task>, Task>)(async (httpContext, nextMiddleware
 
 app.Map("/favicon.ico", (app) => { });
 
-app.MapWhen(context => context.Request.Query.ContainsKey("q"), HandleQuery);
+app.UseWhen(context => context.Request.Query.ContainsKey("q"), HandleQuery);
 
 app.Map("/map/anything/yet", HandleMapYet);
 app.Map("/map/anything", HandleMapAnything);
@@ -76,11 +76,12 @@ void HandleMapYet(IApplicationBuilder app)
 
 void HandleQuery(IApplicationBuilder app)
 {
-    app.Run(async (context) =>
+    app.Use(async (context, next) =>
     {
         string message = "Contains a \"q\" query string!";
         await context.Response.WriteAsync(message + "<br/>\n");
         Console.WriteLine(message);
+        await next();
     });
 }
 #endregion
