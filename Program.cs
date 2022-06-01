@@ -76,12 +76,11 @@ void HandleMapYet(IApplicationBuilder app)
 
 void HandleQuery(IApplicationBuilder app)
 {
-    app.Use(async (context, next) =>
+    app.Run(async (context) =>
     {
         string message = "Contains a \"q\" query string!";
         await context.Response.WriteAsync(message + "<br/>\n");
         Console.WriteLine(message);
-        await next();
     });
 }
 #endregion
